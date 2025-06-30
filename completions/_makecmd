@@ -1,0 +1,30 @@
+#compdef makecmd mkcmd
+#
+# Zsh completion for makecmd
+#
+# Installation:
+#   - Copy to a directory in your $fpath (e.g., /usr/local/share/zsh/site-functions)
+#   - Or add the directory containing this file to your $fpath in .zshrc
+
+_makecmd() {
+    local -a options
+    local -a output_modes
+    
+    options=(
+        '(-d --dry-run)'{-d,--dry-run}'[Print command without any side effects]'
+        '(-e --explain)'{-e,--explain}'[Explain the generated command]'
+        '(-s --safe-mode)'{-s,--safe-mode}'[Extra restrictions on command generation]'
+        '(-n --no-cache)'{-n,--no-cache}'[Bypass local cache]'
+        '(-D --debug)'{-D,--debug}'[Enable debug logging]'
+        '(-o --output)'{-o,--output}'[Output mode]:mode:(auto prefill clipboard stdout)'
+        '(-h --help)'{-h,--help}'[Display help message]'
+        '(-v --version)'{-v,--version}'[Display version information]'
+        '--generate-config[Generate default configuration file]'
+        '*:natural language description:'
+    )
+    
+    _arguments -s $options
+}
+
+# Register completion
+_makecmd "$@"

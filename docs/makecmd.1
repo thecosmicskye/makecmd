@@ -1,0 +1,248 @@
+.TH MAKECMD 1 "December 2024" "makecmd 1.0.0" "User Commands"
+.SH NAME
+makecmd \- convert natural language to shell commands using Claude Code
+.SH SYNOPSIS
+.B makecmd
+[\fIOPTIONS\fR] "\fInatural language description\fR"
+.br
+.B makecmd
+[\fIOPTIONS\fR] < \fIinput.txt\fR
+.br
+.B echo
+"\fIdescription\fR" |
+.B makecmd
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B makecmd
+is a command-line tool that converts natural language descriptions into executable shell commands using Claude Code.
+It provides comprehensive security features including input/output sanitization and command validation to ensure safe operation.
+.PP
+Commands are never automatically executed. Users must manually review and run the generated commands.
+.SH OPTIONS
+.TP
+.BR \-d ", " \-\-dry\-run
+Print the command without any side effects. No clipboard operations or terminal pre-filling.
+.TP
+.BR \-e ", " \-\-explain
+Explain what the generated command does in simple terms.
+.TP
+.BR \-s ", " \-\-safe\-mode
+Enable extra restrictions on command generation. Only allows read-only operations.
+.TP
+.BR \-n ", " \-\-no\-cache
+Bypass the local cache and always query Claude Code.
+.TP
+.BR \-D ", " \-\-debug
+Enable debug logging to ~/.makecmd/logs/makecmd.log
+.TP
+.BR \-o ", " \-\-output " " \fIMODE\fR
+Set output mode. Valid modes are:
+.RS
+.IP \(bu 2
+.B auto
+(default): Try pre-fill, then clipboard, then display
+.IP \(bu 2
+.B prefill:
+Insert command into terminal prompt (zsh/bash)
+.IP \(bu 2
+.B clipboard:
+Copy command to system clipboard
+.IP \(bu 2
+.B stdout:
+Display command with syntax highlighting
+.RE
+.TP
+.BR \-h ", " \-\-help
+Display help message and exit.
+.TP
+.BR \-v ", " \-\-version
+Display version information and exit.
+.TP
+.B \-\-generate\-config
+Generate a default configuration file at ~/.makecmdrc
+.SH EXAMPLES
+.PP
+Basic usage:
+.RS
+.nf
+makecmd "list all python files"
+makecmd "show disk usage"
+.fi
+.RE
+.PP
+Using the short alias:
+.RS
+.nf
+mkcmd "compress this directory"
+.fi
+.RE
+.PP
+Dry run mode:
+.RS
+.nf
+makecmd -d "find large files over 100MB"
+.fi
+.RE
+.PP
+Explain mode:
+.RS
+.nf
+makecmd -e "remove empty directories"
+.fi
+.RE
+.PP
+Safe mode (read-only operations):
+.RS
+.nf
+makecmd -s "show system information"
+.fi
+.RE
+.PP
+Force clipboard output:
+.RS
+.nf
+makecmd -o clipboard "list running processes"
+.fi
+.RE
+.PP
+Using pipes:
+.RS
+.nf
+echo "find all log files" | makecmd
+cat requirements.txt | makecmd
+.fi
+.RE
+.SH CONFIGURATION
+Configuration file location: ~/.makecmdrc
+.PP
+Available options:
+.TP
+.B output_mode
+Default output mode (auto, prefill, clipboard, stdout)
+.TP
+.B cache_ttl
+Cache time-to-live in seconds (0 to disable)
+.TP
+.B safe_mode
+Enable safe mode by default (true/false)
+.TP
+.B debug
+Enable debug logging (true/false)
+.TP
+.B timeout
+Claude Code timeout in seconds (max 600)
+.TP
+.B max_input_length
+Maximum input length in characters
+.TP
+.B color_output
+Enable colored output (true/false)
+.SH SECURITY
+.B makecmd
+implements multiple layers of security:
+.PP
+.B Input Sanitization:
+.RS
+.IP \(bu 2
+Removes shell metacharacters that could lead to injection
+.IP \(bu 2
+Validates input length and encoding
+.IP \(bu 2
+Strips control characters and newlines
+.RE
+.PP
+.B Output Sanitization:
+.RS
+.IP \(bu 2
+Removes ALL newlines and execution triggers from Claude's output
+.IP \(bu 2
+Strips ANSI escape sequences and backticks
+.IP \(bu 2
+Ensures single-line output only
+.RE
+.PP
+.B Command Validation:
+.RS
+.IP \(bu 2
+Blocks dangerous commands (rm -rf /, dd, format, etc.)
+.IP \(bu 2
+Detects suspicious patterns and constructs
+.IP \(bu 2
+Validates command structure and syntax
+.IP \(bu 2
+Safe mode restricts to read-only operations
+.RE
+.PP
+.B Never Auto-Executes:
+.RS
+.IP \(bu 2
+Commands are NEVER automatically executed
+.IP \(bu 2
+User must manually review and run commands
+.IP \(bu 2
+Clear visual warnings for potentially dangerous commands
+.RE
+.SH FILES
+.TP
+.I ~/.makecmdrc
+User configuration file
+.TP
+.I ~/.makecmd/cache/
+Cache directory for command history
+.TP
+.I ~/.makecmd/logs/makecmd.log
+Debug and error log file
+.SH ENVIRONMENT
+.TP
+.B MAKECMD_CONFIG
+Alternative configuration file path
+.TP
+.B MAKECMD_CACHE_DIR
+Alternative cache directory path
+.TP
+.B MAKECMD_LOG_DIR
+Alternative log directory path
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+.TP
+.B 1
+Invalid input
+.TP
+.B 2
+Claude Code error
+.TP
+.B 3
+Dangerous command detected
+.TP
+.B 4
+Timeout
+.TP
+.B 5
+Configuration error
+.TP
+.B 6
+Missing dependencies
+.SH DEPENDENCIES
+.B makecmd
+requires Claude Code to be installed and authenticated.
+Visit https://claude.ai/code for installation instructions.
+.SH AUTHOR
+Written by the makecmd contributors.
+.SH REPORTING BUGS
+Report bugs at https://github.com/Cosmic-Skye/makecmd/issues
+.PP
+For security vulnerabilities, report privately to security@cosmicolabs.com
+.SH COPYRIGHT
+Copyright (C) 2024 makecmd contributors.
+License: MIT
+.PP
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH SEE ALSO
+.BR claude (1),
+.BR bash (1),
+.BR zsh (1)
+.PP
+Full documentation at: https://github.com/Cosmic-Skye/makecmd

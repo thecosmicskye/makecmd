@@ -1,0 +1,44 @@
+# Logs
+logs/
+*.log
+
+# Cache
+cache/
+.cache/
+
+# User config
+.makecmdrc
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-*
+
+# Test output
+test-results/
+coverage/
+
+# Build artifacts
+dist/
+build/
+
+# Backup files
+*.bak
+*.backup
+
+# User-specific directories
+.makecmd/
+
+# Claude files
+.claude/
