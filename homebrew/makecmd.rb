@@ -3,7 +3,7 @@ class Makecmd < Formula
   homepage "https://github.com/Cosmic-Skye/makecmd"
   url "https://github.com/Cosmic-Skye/makecmd/archive/v1.0.0.tar.gz"
   sha256 "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
-  license "MIT"
+  license "GPL-3.0"
   
   depends_on "claude-code" => :runtime
   
