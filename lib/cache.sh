@@ -77,8 +77,10 @@ generate_cache_key() {
     local input="$1"
     
     if [[ -z "$input" ]]; then
-        log "ERROR" "Empty input for cache key generation"
-        return 1
+        log "ERROR" "Empty input for cache key generation" 2>/dev/null || true
+        # Return empty string instead of failing
+        echo ""
+        return 0
     fi
     
     # Use SHA256 for cache key generation
@@ -91,7 +93,7 @@ generate_cache_key() {
         echo -n "$input" | openssl dgst -sha256 | awk '{print $2}'
     else
         # No secure hashing available - generate a random key instead
-        log "ERROR" "No secure hash command available (sha256sum, shasum, or openssl)"
+        log "ERROR" "No secure hash command available (sha256sum, shasum, or openssl)" 2>/dev/null || true
         # Generate a unique key based on timestamp and random data
         echo "$(date +%s)_$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
     fi

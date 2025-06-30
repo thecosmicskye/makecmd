@@ -211,6 +211,36 @@ create_initial_config() {
     fi
 }
 
+# Install shell integrations
+install_shell_integrations() {
+    print_info "Installing shell integrations..."
+    
+    # Install zsh integration
+    if [[ -f "completions/makecmd.zsh" ]]; then
+        local zsh_completions_dir="${HOME}/.makecmd/completions"
+        mkdir -p "$zsh_completions_dir"
+        cp "completions/makecmd.zsh" "$zsh_completions_dir/"
+        chmod +x "$zsh_completions_dir/makecmd.zsh"
+        
+        # Add to .zshrc if not already present
+        if [[ -f "${HOME}/.zshrc" ]]; then
+            if ! grep -q "source ~/.makecmd/completions/makecmd.zsh" "${HOME}/.zshrc"; then
+                echo "" >> "${HOME}/.zshrc"
+                echo "# makecmd zsh integration" >> "${HOME}/.zshrc"
+                echo "source ~/.makecmd/completions/makecmd.zsh" >> "${HOME}/.zshrc"
+                print_success "Zsh integration installed and added to ~/.zshrc"
+                print_info "Reload your shell or run: source ~/.zshrc"
+            else
+                print_success "Zsh integration already configured in ~/.zshrc"
+            fi
+        else
+            print_success "Zsh integration installed"
+            print_info "To enable zsh prefill, add this to your ~/.zshrc:"
+            print_info "  source ~/.makecmd/completions/makecmd.zsh"
+        fi
+    fi
+}
+
 # Verify installation
 verify_installation() {
     print_info "Verifying installation..."
@@ -315,6 +345,7 @@ main() {
     install_files
     install_man_page
     create_initial_config
+    install_shell_integrations
     verify_installation
     
     echo
