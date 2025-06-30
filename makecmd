@@ -333,28 +333,9 @@ prefill_terminal() {
     local command="$1"
     local shell_type=$(detect_shell)
     
-    case "$shell_type" in
-        zsh)
-            # For zsh, use print -z
-            print -z "$command"
-            return 0
-            ;;
-        bash)
-            # For bash, try to use bind
-            if [[ -n "${READLINE_LINE:-}" ]]; then
-                READLINE_LINE="$command"
-                READLINE_POINT=${#command}
-                return 0
-            else
-                # Fallback: can't pre-fill in non-interactive bash
-                return 1
-            fi
-            ;;
-        *)
-            # Unknown shell
-            return 1
-            ;;
-    esac
+    # Since the script runs in bash, we can't directly prefill zsh
+    # For now, return 1 to use clipboard instead
+    return 1
 }
 
 # Function to copy to clipboard
@@ -500,8 +481,8 @@ main() {
     local cache_key=$(generate_cache_key "$sanitized_input")
     local cached_command=""
     
-    if [[ "$NO_CACHE" == "false" ]]; then
-        cached_command=$(get_cached_command "$cache_key")
+    if [[ "$NO_CACHE" == "false" ]] && [[ -n "$cache_key" ]]; then
+        cached_command=$(get_cached_command "$cache_key" || true)
     fi
     
     local command=""
@@ -547,7 +528,7 @@ main() {
         fi
         
         # Cache the command
-        if [[ "$NO_CACHE" == "false" ]]; then
+        if [[ "$NO_CACHE" == "false" ]] && [[ -n "$cache_key" ]]; then
             cache_command "$cache_key" "$command"
         fi
         

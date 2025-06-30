@@ -30,12 +30,20 @@ load_config() {
     fi
     
     # Check file permissions
-    local perms=$(stat -f%p "$config_file" 2>/dev/null || stat -c%a "$config_file" 2>/dev/null)
+    local perms=""
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS: stat -f%p returns full mode, we need last 3 digits
+        perms=$(stat -f%p "$config_file" 2>/dev/null | tail -c 4)
+    else
+        # Linux: stat -c%a returns just the permission bits
+        perms=$(stat -c%a "$config_file" 2>/dev/null)
+    fi
+    
     if [[ -n "$perms" ]]; then
-        # Remove file type bits, keep only permission bits
-        perms=$((perms & 0777))
+        # Convert to decimal if needed
+        perms=$((10#$perms))
         if [[ $perms -ne 600 ]] && [[ $perms -ne 644 ]]; then
-            log "WARN" "Config file has insecure permissions: $perms"
+            log "WARN" "Config file has insecure permissions: $perms" 2>/dev/null || true
             echo -e "${YELLOW}Warning: Config file should have 600 or 644 permissions${NC}" >&2
         fi
     fi
