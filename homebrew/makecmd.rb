@@ -2,7 +2,7 @@ class Makecmd < Formula
   desc "Convert natural language to shell commands using Claude Code"
   homepage "https://github.com/Cosmic-Skye/makecmd"
   url "https://github.com/Cosmic-Skye/makecmd/archive/v1.0.0.tar.gz"
-  sha256 "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+  sha256 "c1b36053646aedcf0ae6e432eb22afba6724d70ec0321d8c4023806d83a22c83"
   license "GPL-3.0"
   
   depends_on "claude-code" => :runtime
